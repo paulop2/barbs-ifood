@@ -15,7 +15,7 @@ LATITUDE_PESQUISA = "-23.48511167789553"
 LONGITUDE_PESQUISA = "-46.352385881847496"
 
 HEADERS = {
-    'Host': 'marketplace.ifood.com.br',
+    'Host': 'cw-marketplace.ifood.com.br',
     'Connection': 'keep-alive',
     'sec-ch-ua': '"Not(A:Brand";v="24", "Chromium";v="122"',
     'app_version': '9.102.44',
@@ -27,7 +27,7 @@ HEADERS = {
     'x-client-application-key': '41a266ee-51b7-4c37-9e9d-5cd331f280d5',
     'Accept': 'application/json, text/plain, */*',
     'Cache-Control': 'no-cache, no-store',
-    'X-Ifood-Session-Id': '9304c3b5-350c-46b7-b97f-9fce88b2a252',
+    'X-Ifood-Session-Id': '8d1d8bd8-4382-4eba-a0f9-aec41525b12c',
     'x-device-model': 'Windows Chrome',
     'platform': 'Desktop',
     'sec-ch-ua-platform': '"Windows"',
@@ -51,7 +51,7 @@ CATEGORY_STRUCTURE = {
 
 def process_restaurant(ID, LATITUDE_PESQUISA, LONGITUDE_PESQUISA, dados_restaurantes):
     try:
-        URL = f'https://marketplace.ifood.com.br/v1/merchant-info/graphql?latitude={LATITUDE_PESQUISA}&longitude={LONGITUDE_PESQUISA}&channel=IFOOD'
+        URL = f'https://cw-marketplace.ifood.com.br/v1/merchant-info/graphql?latitude={LATITUDE_PESQUISA}&longitude={LONGITUDE_PESQUISA}&channel=IFOOD'
         PAYLOAD = {
             "query": "query ($merchantId: String!) { merchant (merchantId: $merchantId, required: true) { available availableForScheduling contextSetup { catalogGroup context regionGroup } currency deliveryFee { originalValue type value } deliveryMethods { catalogGroup deliveredBy id maxTime minTime mode originalValue priority schedule { now shifts { dayOfWeek endTime interval startTime } timeSlots { availableLoad date endDateTime endTime id isAvailable originalPrice price startDateTime startTime } } subtitle title type value state } deliveryTime distance features id mainCategory { code name } minimumOrderValue name paymentCodes preparationTime priceRange resources { fileName type } slug tags takeoutTime userRating } merchantExtra (merchantId: $merchantId, required: false) { address { city country district latitude longitude state streetName streetNumber timezone zipCode } categories { code description friendlyName } companyCode configs { bagItemNoteLength chargeDifferentToppingsMode nationalIdentificationNumberRequired orderNoteLength } deliveryTime description documents { CNPJ { type value } MCC { type value } } enabled features groups { externalId id name type } id locale mainCategory { code description friendlyName } merchantChain { externalId id name } metadata { ifoodClub { banner { action image priority title } } } minimumOrderValue name phoneIf priceRange resources { fileName type } shifts { dayOfWeek duration start } shortId tags takeoutTime test type userRatingCount } }",
             "variables": {"merchantId": f"{ID}"}
@@ -108,7 +108,7 @@ def worker(params):
 def fetch_ids(category_alias, LATITUDE_PESQUISA, LONGITUDE_PESQUISA):
     try:
         LISTA_ID = []
-        URL = f'https://marketplace.ifood.com.br/v2/home?latitude={LATITUDE_PESQUISA}&longitude={LONGITUDE_PESQUISA}&channel=IFOOD&size=100&alias={category_alias}'
+        URL = f'https://cw-marketplace.ifood.com.br/v2/home?latitude={LATITUDE_PESQUISA}&longitude={LONGITUDE_PESQUISA}&channel=IFOOD&size=100&alias={category_alias}'
         PAYLOAD = {
             "supported-headers": ["OPERATION_HEADER"],
             "supported-cards": ["MERCHANT_LIST", "CATALOG_ITEM_LIST", "CATALOG_ITEM_LIST_V2", "CATALOG_ITEM_LIST_V3",
@@ -137,7 +137,7 @@ def fetch_ids(category_alias, LATITUDE_PESQUISA, LONGITUDE_PESQUISA):
         while True:
             time.sleep(1)
             try:
-                URL = f'https://marketplace.ifood.com.br/v2/home?latitude={LATITUDE_PESQUISA}&longitude={LONGITUDE_PESQUISA}&channel=IFOOD&size=100&section={ID_REFERENCIA}&cursor={ACTION}&alias={category_alias}'
+                URL = f'https://cw-marketplace.ifood.com.br/v2/home?latitude={LATITUDE_PESQUISA}&longitude={LONGITUDE_PESQUISA}&channel=IFOOD&size=100&section={ID_REFERENCIA}&cursor={ACTION}&alias={category_alias}'
                 response = requests.post(URL, headers=HEADERS, json=PAYLOAD, verify=False)
                 lista_content = response.json()['sections'][section_idx]['cards'][card_idx]['data']['contents']
                 ACTION = \
@@ -197,7 +197,7 @@ def fetch_and_process_ids(category_alias):
         "VALOR MINIMO",
         "CATEGORIA", "AVALIACAO", "TEMPO ENTREGA", "VALOR ORIGINAL", "SUPER RESTAURANTE"
     ])
-    df_restaurantes.to_excel(f"RESULTADO {category_alias.upper()} IFOOD.xlsx", index=False, engine='openpyxl')
+    df_restaurantes.to_csv(f"RESULTADO {category_alias.upper()} IFOOD.csv", index=False, encoding='utf-8-sig')
     print(f"PLANILHA {category_alias.upper()} GERADA COM SUCESSO!\n")
 
 

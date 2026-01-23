@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(findstr:*)",
+      "Bash(python capture_ifood_headers.py:*)",
+      "Bash(python:*)",
+      "Bash(timeout /t 1)",
+      "Bash(ping:*)"
+    ]
+  }
+}
