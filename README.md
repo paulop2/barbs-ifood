@@ -1,59 +1,59 @@
 # iFood Data Scraper
 
-Python scripts to scrape merchant/restaurant data from iFood's API for São Paulo region.
+Scripts Python para extrair dados de estabelecimentos/restaurantes da API do iFood para a região de São Paulo.
 
-## Overview
+## Visão Geral
 
-Two scripts that collect detailed information about merchants and restaurants from iFood marketplace:
-- `restaurantes/PROJETO_LEONARDO (2).py` - Food delivery restaurants
-- `outras categorias/PROJETO_LEONARDO_outras_SP.py` - Other categories (markets, pharmacies, pet shops, etc.)
+Dois scripts que coletam informações detalhadas sobre estabelecimentos e restaurantes do marketplace iFood:
+- `restaurantes/PROJETO_LEONARDO (2).py` - Restaurantes de delivery de comida
+- `outras categorias/PROJETO_LEONARDO_outras_SP.py` - Outras categorias (mercados, farmácias, pet shops, etc.)
 
-## Features
+## Recursos
 
-- Multi-location scraping across 10 São Paulo coordinates
-- Parallel processing for faster data collection
-- GraphQL API queries for detailed merchant information
-- Automatic pagination handling
-- Excel export with structured data
+- Extração multi-localização em 10 coordenadas de São Paulo
+- Processamento paralelo para coleta mais rápida de dados
+- Consultas GraphQL API para informações detalhadas de estabelecimentos
+- Tratamento automático de paginação
+- Exportação Excel com dados estruturados
 
-## Collected Data
+## Dados Coletados
 
-Each merchant entry includes:
-- **Location**: Street, number, neighborhood, city, CEP, coordinates
-- **Business**: Name, CNPJ, category
-- **Pricing**: Price range ($-$$$$$), minimum order value, delivery fee
-- **Metrics**: User rating, delivery time
-- **Status**: Super Restaurant flag
+Cada entrada de estabelecimento inclui:
+- **Localização**: Rua, número, bairro, cidade, CEP, coordenadas
+- **Negócio**: Nome, CNPJ, categoria
+- **Preços**: Faixa de preço ($-$$$$$), valor mínimo do pedido, taxa de entrega
+- **Métricas**: Avaliação de usuários, tempo de entrega
+- **Status**: Flag Super Restaurante
 
-## Categories
+## Categorias
 
-| Script | Categories |
+| Script | Categorias |
 |--------|-----------|
 | Restaurantes | HOME_FOOD_DELIVERY |
 | Outras Categorias | MERCADO_BEBIDAS, HOME_MERCADO_BR, MERCADO_FARMACIA, MERCADO_PETSHOP, SHOPPING_OFICIAL |
 
-## Requirements
+## Requisitos
 
 ```bash
 pip install pandas requests openpyxl
 ```
 
-## Setup
+## Configuração
 
-1. Create a `TENTATIVAS.txt` file in each script's directory containing the number of retry attempts (e.g., `5`)
+1. Crie um arquivo `TENTATIVAS.txt` no diretório de cada script contendo o número de tentativas de repetição (ex: `5`)
 
-## Usage
+## Uso
 
 ```bash
-# For restaurants
+# Para restaurantes
 cd restaurantes
 python "PROJETO_LEONARDO (2).py"
 
-# For other categories
+# Para outras categorias
 cd "outras categorias"
 python "PROJETO_LEONARDO_outras_SP.py"
 ```
 
-## Output
+## Saída
 
-Each script generates Excel files named `RESULTADO {CATEGORY} IFOOD.xlsx` containing all collected merchant data.
+Cada script gera arquivos Excel nomeados `RESULTADO {CATEGORIA} IFOOD.xlsx` contendo todos os dados de estabelecimentos coletados.
