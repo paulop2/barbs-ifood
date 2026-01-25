@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iFood Scraper - Seleção de Coordenadas</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        #map {
+            flex: 1;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            cursor: crosshair;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-box h3 {
+            font-size: 14px;
+            color: #667eea;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .counter {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .instructions {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .instructions ul {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 5px;
+        }
+
+        .coordinate-list {
+            flex: 1;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px;
+            max-height: 300px;
+        }
+
+        .coordinate-item {
+            background: white;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 5px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .coordinate-item .coords {
+            color: #333;
+            font-family: 'Courier New', monospace;
+        }
+
+        .coordinate-item .remove-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: background 0.2s;
+        }
+
+        .coordinate-item .remove-btn:hover {
+            background: #ff3838;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .clear-btn {
+            background: #f1f2f6;
+            color: #333;
+        }
+
+        .clear-btn:hover {
+            background: #dfe4ea;
+        }
+
+        .preset-btn {
+            background: #3742fa;
+            color: white;
+            font-size: 12px;
+            padding: 8px;
+        }
+
+        .preset-btn:hover {
+            background: #2f3ae8;
+        }
+
+        .leaflet-popup-content {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .status-message {
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 13px;
+            display: none;
+        }
+
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>iFood Data Scraper - Seleção de Coordenadas</h1>
+        <p>Clique no mapa para selecionar as localizações de raspagem de dados</p>
+    </div>
+
+    <div class="container">
+        <div id="map"></div>
+
+        <div class="sidebar">
+            <div class="info-box">
+                <h3>Coordenadas Selecionadas</h3>
+                <div class="counter" id="counter">0</div>
+            </div>
+
+            <div class="instructions">
+                <strong>Instruções:</strong>
+                <ul>
+                    <li>Clique no mapa para adicionar uma coordenada</li>
+                    <li>Clique em um marcador existente para removê-lo</li>
+                    <li>Use os botões abaixo para gerenciar a seleção</li>
+                </ul>
+            </div>
+
+            <button class="preset-btn" onclick="loadSaoPauloGrid()">
+                Carregar Grid Padrão (10 Pontos SP)
+            </button>
+
+            <div class="coordinate-list" id="coordinateList"></div>
+
+            <div class="buttons">
+                <button class="clear-btn" onclick="clearAll()">Limpar Tudo</button>
+                <button class="submit-btn" id="submitBtn" disabled onclick="submitCoordinates()">
+                    Enviar Coordenadas
+                </button>
+            </div>
+
+            <div class="status-message" id="statusMessage"></div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // Initialize map centered on São Paulo
+        const map = L.map('map').setView([-23.5505, -46.6333], 11);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Store coordinates and markers
+        let coordinates = [];
+        let markers = [];
+
+        // Default São Paulo grid coordinates
+        const saoPauloGrid = [
+            {lat: -23.44859826, lon: -46.38589552},
+            {lat: -23.4220173, lon: -46.32689839},
+            {lat: -23.47644759, lon: -46.2980699},
+            {lat: -23.47620027, lon: -46.32743982},
+            {lat: -23.47594743, lon: -46.35680932},
+            {lat: -23.50303844, lon: -46.35708664},
+            {lat: -23.44959731, lon: -46.26844066},
+            {lat: -23.44935583, lon: -46.29780498},
+            {lat: -23.44910883, lon: -46.3271689},
+            {lat: -23.44885631, lon: -46.35653242}
+        ];
+
+        // Handle map clicks
+        map.on('click', function(e) {
+            addCoordinate(e.latlng.lat, e.latlng.lng);
+        });
+
+        function addCoordinate(lat, lng) {
+            const coord = {
+                lat: lat.toFixed(8),
+                lon: lng.toFixed(8)
+            };
+
+            // Create marker
+            const marker = L.marker([lat, lng])
+                .addTo(map)
+                .bindPopup(`<strong>Coordenada ${coordinates.length + 1}</strong><br>Lat: ${coord.lat}<br>Lon: ${coord.lon}`)
+                .on('click', function() {
+                    removeCoordinate(coordinates.indexOf(coord));
+                });
+
+            coordinates.push(coord);
+            markers.push(marker);
+
+            updateUI();
+        }
+
+        function removeCoordinate(index) {
+            if (index >= 0 && index < coordinates.length) {
+                map.removeLayer(markers[index]);
+                coordinates.splice(index, 1);
+                markers.splice(index, 1);
+                updateUI();
+            }
+        }
+
+        function clearAll() {
+            markers.forEach(marker => map.removeLayer(marker));
+            coordinates = [];
+            markers = [];
+            updateUI();
+        }
+
+        function loadSaoPauloGrid() {
+            clearAll();
+            saoPauloGrid.forEach(coord => {
+                addCoordinate(parseFloat(coord.lat), parseFloat(coord.lon));
+            });
+
+            // Fit map to show all markers
+            if (markers.length > 0) {
+                const group = L.featureGroup(markers);
+                map.fitBounds(group.getBounds().pad(0.1));
+            }
+        }
+
+        function updateUI() {
+            // Update counter
+            document.getElementById('counter').textContent = coordinates.length;
+
+            // Update coordinate list
+            const listEl = document.getElementById('coordinateList');
+            if (coordinates.length === 0) {
+                listEl.innerHTML = '<div style="text-align: center; color: #999; padding: 20px;">Nenhuma coordenada selecionada</div>';
+            } else {
+                listEl.innerHTML = coordinates.map((coord, index) => `
+                    <div class="coordinate-item">
+                        <div class="coords">${index + 1}. ${coord.lat}, ${coord.lon}</div>
+                        <button class="remove-btn" onclick="removeCoordinate(${index})">×</button>
+                    </div>
+                `).join('');
+            }
+
+            // Enable/disable submit button
+            document.getElementById('submitBtn').disabled = coordinates.length === 0;
+        }
+
+        async function submitCoordinates() {
+            const submitBtn = document.getElementById('submitBtn');
+            const statusMsg = document.getElementById('statusMessage');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Enviando...';
+
+            try {
+                const response = await fetch('http://localhost:8765/save_coordinates', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        coordinates: coordinates,
+                        timestamp: new Date().toISOString(),
+                        count: coordinates.length
+                    })
+                });
+
+                if (response.ok) {
+                    statusMsg.className = 'status-message success';
+                    statusMsg.textContent = 'Coordenadas enviadas com sucesso! Fechando em 2 segundos...';
+
+                    setTimeout(() => {
+                        window.close();
+                    }, 2000);
+                } else {
+                    throw new Error('Erro ao enviar coordenadas');
+                }
+            } catch (error) {
+                statusMsg.className = 'status-message error';
+                statusMsg.textContent = 'Erro ao enviar coordenadas. Verifique se o servidor está rodando.';
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Enviar Coordenadas';
+            }
+        }
+
+        // Initialize UI
+        updateUI();
+    </script>
+</body>
+</html>
