@@ -1,0 +1,51 @@
+============================================================
+          iFood Data Scraper - INSTRUCOES DE USO
+============================================================
+
+REQUISITO: Ter Python instalado no computador
+           (baixe em https://www.python.org/downloads/)
+
+           IMPORTANTE: Na instalacao do Python, marque a opcao
+           "Add Python to PATH"!
+
+------------------------------------------------------------
+                      COMO USAR
+------------------------------------------------------------
+
+1. PRIMEIRA VEZ (so precisa fazer uma vez):
+   - De dois cliques em "INSTALAR.bat"
+   - Aguarde a instalacao terminar (pode demorar alguns minutos)
+
+2. PARA USAR O PROGRAMA:
+   - De dois cliques em "EXECUTAR.bat"
+   - Siga as instrucoes na tela
+
+------------------------------------------------------------
+                    PASSO A PASSO
+------------------------------------------------------------
+
+Quando voce executar o programa, ele vai:
+
+1. Abrir um mapa para voce escolher a localizacao
+   - Clique no mapa para selecionar onde quer buscar
+   - Clique em "Confirm Selection" e feche o navegador
+
+2. Abrir o site do iFood automaticamente
+   - Aguarde ele carregar e capturar os dados necessarios
+   - O navegador vai fechar sozinho
+
+3. Perguntar qual categoria voce quer buscar
+   - Digite o numero da categoria desejada
+
+4. Buscar os dados e salvar em um arquivo Excel
+   - O arquivo sera salvo na mesma pasta do programa
+
+------------------------------------------------------------
+                    PROBLEMAS?
+------------------------------------------------------------
+
+- "Python nao encontrado": Instale o Python e reinicie o PC
+- "Falha na captura de headers": Tente executar novamente
+- Outros erros: Entre em contato com quem te enviou o programa
+
+============================================================

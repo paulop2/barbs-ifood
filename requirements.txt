@@ -1,0 +1,6 @@
+requests
+pandas
+urllib3
+tqdm
+openpyxl
+playwright
